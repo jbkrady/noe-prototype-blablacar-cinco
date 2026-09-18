@@ -67,3 +67,9 @@
 .cal-day:disabled { color: #b7c0cc; box-shadow: none; cursor: default; }
 .cal-day--today { font-weight: 800; }
 .cal-day--on { background: var(--c-primary); color: #fff; box-shadow: none; }
+
+.cal-day--busy { position: relative; color: #b7c0cc; box-shadow: none; background: #f1f3f6; }
+.cal-day--busy::after { content: ''; position: absolute; left: 50%; bottom: 6px; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: #f0a14e; }
+.cal-legend { display: flex; align-items: center; gap: 8px; padding: 12px 20px 0; font-size: 13px; color: var(--c-text-2); }
+.cal-legend-dot { width: 7px; height: 7px; border-radius: 50%; background: #f0a14e; }
+.picker-warning { margin: 16px 0; padding: 12px 14px; border-radius: 12px; background: var(--c-warning-soft); color: var(--c-warning-text); font-size: 14px; font-weight: 500; line-height: 1.4; }

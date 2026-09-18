@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, History, LocateFixed, MapPin, X } from 'lucide-react'
-import { RECENT, searchPlaces, type Place } from '../data/places'
+import { RECENT, cityOf, sameCity, searchPlaces, type Place } from '../data/places'
 import { MONTHS_CAP, sameDay, startOfDay } from '../data/format'
 import { useRouter } from '../state/router'
 import { isComplete, useStore } from '../state/store'
@@ -21,7 +21,15 @@ export function PlacePicker({ target }: { target: PlaceTarget }) {
   const input = useRef<HTMLInputElement>(null)
 
   const query = touched ? q : ''
-  const results = useMemo(() => searchPlaces(query), [query])
+  // l'autre extrémité du trajet : on ne propose pas la même ville au départ et à l'arrivée
+  const other =
+    target === 'search-from' ? s.search.to : target === 'search-to' ? s.search.from : target === 'publish-from' ? s.draft.to : s.draft.from
+  const allowed = (p: Place) => !sameCity(p, other)
+  const found = useMemo(() => searchPlaces(query), [query])
+  const results = found.filter(allowed)
+  const typed: Place = { label: q.trim(), sub: 'France' }
+  const blocked = !!query && results.length === 0 && (found.length > 0 || sameCity(typed, other))
+  const otherRole = target.endsWith('to') ? 'votre départ' : 'votre arrivée'
 
   const pick = (p: Place) => {
     if (target === 'search-from') setSearch({ from: p })
@@ -79,14 +87,14 @@ export function PlacePicker({ target }: { target: PlaceTarget }) {
       <div className="list">
         {!query ? (
           <>
-            {target !== 'publish-to' && target !== 'search-to' && (
+            {target !== 'publish-to' && target !== 'search-to' && allowed({ label: '65 Rue Ordener', sub: '65 Rue Ordener, Paris' }) && (
               <button className="row" onClick={() => pick({ label: '65 Rue Ordener', sub: '65 Rue Ordener, Paris' })}>
                 <span className="row-icon"><LocateFixed size={22} /></span>
                 <span className="row-text"><span className="row-title picker-strong">Utiliser ma position actuelle</span></span>
                 <ChevronRight className="row-chev" size={22} />
               </button>
             )}
-            {RECENT.map(p => (
+            {RECENT.filter(allowed).map(p => (
               <PlaceRow key={p.sub + p.label} p={p} icon={<History size={22} />} onClick={() => pick(p)} />
             ))}
           </>
@@ -95,8 +103,13 @@ export function PlacePicker({ target }: { target: PlaceTarget }) {
             {results.map(p => (
               <PlaceRow key={p.sub + p.label} p={p} onClick={() => pick(p)} />
             ))}
-            {results.length === 0 && (
-              <PlaceRow p={{ label: q.trim(), sub: 'Utiliser cette adresse' }} icon={<MapPin size={22} />} onClick={() => pick({ label: q.trim(), sub: 'France' })} />
+            {blocked && other && (
+              <p className="picker-warning">
+                {cityOf(other)} est déjà {otherRole}. Choisissez une autre ville.
+              </p>
+            )}
+            {results.length === 0 && !blocked && (
+              <PlaceRow p={{ label: q.trim(), sub: 'Utiliser cette adresse' }} icon={<MapPin size={22} />} onClick={() => pick(typed)} />
             )}
           </>
         )}
@@ -121,7 +134,7 @@ function PlaceRow({ p, icon, onClick }: { p: Place; icon?: React.ReactNode; onCl
 const WEEK = ['Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.', 'Dim.']
 
 /** Calendrier sur 4 mois, jours passés désactivés */
-export function Calendar({ selected, onPick, min }: { selected: Date[]; onPick: (d: Date) => void; min?: Date }) {
+export function Calendar({ selected, onPick, min, busy = [] }: { selected: Date[]; onPick: (d: Date) => void; min?: Date; busy?: Date[] }) {
   const today = startOfDay(new Date())
   const first = min && min > today ? startOfDay(min) : today
   const months = Array.from({ length: 4 }, (_, i) => new Date(today.getFullYear(), today.getMonth() + i, 1))
@@ -142,11 +155,13 @@ export function Calendar({ selected, onPick, min }: { selected: Date[]; onPick: 
                 const d = new Date(m.getFullYear(), m.getMonth(), i + 1)
                 const past = d < first
                 const on = selected.some(x => sameDay(x, d))
+                const taken = busy.some(x => sameDay(x, d))
                 return (
                   <button
                     key={i}
-                    className={`cal-day${on ? ' cal-day--on' : ''}${sameDay(d, today) ? ' cal-day--today' : ''}`}
-                    disabled={past}
+                    className={`cal-day${on ? ' cal-day--on' : ''}${sameDay(d, today) ? ' cal-day--today' : ''}${taken ? ' cal-day--busy' : ''}`}
+                    disabled={past || taken}
+                    aria-label={taken ? `${i + 1} : vous avez déjà un trajet ce jour-là` : undefined}
                     onClick={() => onPick(d)}
                     aria-pressed={on}
                   >
@@ -175,7 +190,13 @@ export function DatePicker({ mode }: { mode: 'search' | 'return' | 'publish' | '
   }[mode]
   const [dates, setDates] = useState<Date[]>(initial)
   // le retour ne peut pas précéder l'aller
-  const min = mode === 'return' ? s.search.date : mode === 'publish-return' ? s.draft.dates[0] : undefined
+  const tomorrow = new Date(Date.now() + 86400000)
+  const min = mode === 'return' ? s.search.date : mode === 'publish-return' ? s.draft.dates[0] : mode === 'publish' ? tomorrow : undefined
+  // un conducteur ne peut pas publier deux trajets le même jour (ni un retour le jour de l'aller)
+  const busy =
+    mode === 'publish' ? s.trips.map(t => t.departure)
+    : mode === 'publish-return' ? [...s.trips.map(t => t.departure), ...s.draft.dates]
+    : []
 
   const toggle = (d: Date) => {
     if (!multi) return setDates([d])
@@ -229,7 +250,10 @@ export function DatePicker({ mode }: { mode: 'search' | 'return' | 'publish' | '
         </div>
       }
     >
-      <Calendar selected={dates} onPick={toggle} min={min} />
+      {busy.length > 0 && (
+        <p className="cal-legend"><span className="cal-legend-dot" /> Jours où vous avez déjà un trajet</p>
+      )}
+      <Calendar selected={dates} onPick={toggle} min={min} busy={busy} />
     </Screen>
   )
 }

@@ -39,5 +39,8 @@ export function searchPlaces(q: string): Place[] {
 }
 
 /** Ville courte pour les cartes de trajet (« 65 Rue Ordener » → « Paris ») */
+/** Même ville ? (un trajet ne peut pas partir et arriver au même endroit) */
+export const sameCity = (a?: Place, b?: Place) => !!a && !!b && norm(cityOf(a)) === norm(cityOf(b))
+
 export const cityOf = (p: Place) =>
   p.sub.includes(',') ? p.sub.split(',').pop()!.trim().replace(/^\d{5}\s+/, '') : p.label
