@@ -1,0 +1,18 @@
+/* Tokens relevés dans les maquettes Figma « BlaBlaCar 5 » et sur blablacar.fr */
+:root {
+  --c-text: #001536;
+  --c-text-2: #576680;
+  --c-primary: #0066d4;
+  --c-primary-soft: #e6f2fe;
+  --c-surface: #f5f7fb;
+  --c-white: #ffffff;
+  --c-divider: rgba(48, 50, 51, 0.12);
+  --c-divider-strong: rgba(48, 50, 51, 0.2);
+  --c-success: #1c8a4a;
+  --c-success-soft: #e6f4ec;
+  --c-warning-text: #b2752a;
+  --c-warning-soft: #fcf3e3;
+
+  --font: 'gt-eesti', 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-ui: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}

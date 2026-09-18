@@ -1,0 +1,49 @@
+.trips-title { padding-top: 20px; font-size: 30px; }
+.fuel {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 14px;
+  margin: 16px 16px 0;
+  padding: 16px;
+  border-radius: 16px;
+  background: #e8f1fd;
+}
+.fuel b { font-size: 16px; }
+.fuel p { font-size: 14px; line-height: 1.35; margin-top: 2px; }
+.fuel .btn { grid-column: 1 / -1; margin-top: 6px; box-shadow: none; }
+.trips { display: grid; gap: 14px; padding: 16px; }
+.trip { border-radius: 16px; box-shadow: 0 0 0 1px var(--c-divider-strong); overflow: hidden; }
+.trip--alert { box-shadow: 0 0 0 1.5px #f0a14e; }
+.trip-alert-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--c-warning-soft);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-warning-text);
+}
+.trip-alert-lead { margin-top: 16px; font-size: 15px; line-height: 1.35; }
+.criteria { list-style: none; margin-top: 6px; }
+.crit { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; font-size: 15px; text-align: left; }
+.crit--todo { color: var(--c-primary); font-weight: 600; }
+.crit--done { color: var(--c-text); }
+.trip-body { padding: 14px 16px 16px; }
+.trip-date { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.trip-date h2 {
+  min-width: 0;
+  font-family: var(--font);
+  font-size: clamp(15px, 4.4vw, 19px);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.trip-pax { font-size: 13px; color: #0c7a43; white-space: nowrap; }
+.trip-route { display: flex; gap: 12px; margin-top: 14px; }
+.trip-times { display: flex; flex-direction: column; gap: 2px; font-size: 15px; }
+.trip-times small { font-size: 11px; color: var(--c-text-2); margin-bottom: 14px; }
+.trip-cities { display: flex; flex-direction: column; justify-content: space-between; font-size: 16px; }
+.archived { display: flex; align-items: center; justify-content: space-between; width: calc(100% - 48px); margin: 0 24px 24px; padding: 12px 0; font-family: var(--font); font-size: 17px; font-weight: 700; }
+.empty { display: grid; justify-items: center; gap: 16px; padding: 90px 40px; text-align: center; color: var(--c-text-2); }
