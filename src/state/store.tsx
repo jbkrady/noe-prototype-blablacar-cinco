@@ -154,8 +154,6 @@ interface Ctx {
   setDraft: (patch: Partial<Draft>) => void
   setSearch: (patch: Partial<Search>) => void
   reset: () => void
-  /** profil de départ du scénario conducteur : ni photo ni pièce d'identité (les trajets sont conservés) */
-  resetProfile: () => void
   toast: string | null
   showToast: (msg: string) => void
 }
@@ -177,7 +175,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <StoreContext.Provider value={{ s, set, setDraft, setSearch, reset: () => setS(prev => ({ ...initial(), photoCheck: prev.photoCheck })), resetProfile: () => setS(prev => ({ ...prev, photo: null, identity: 'none', minibio: '', prefs: [], vehicle: null, photoAttempts: 0, draft: newDraft() })), toast, showToast }}>
+    <StoreContext.Provider value={{ s, set, setDraft, setSearch, reset: () => setS(prev => ({ ...initial(), photoCheck: prev.photoCheck })), toast, showToast }}>
       {children}
     </StoreContext.Provider>
   )

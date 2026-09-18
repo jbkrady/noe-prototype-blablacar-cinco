@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { ArrowLeft, ArrowRight, Check, ChevronRight, CircleMinus, CirclePlus } from 'lucide-react'
 import { useRouter } from '../state/router'
-import { useStore } from '../state/store'
 import './kit.css'
 
 /** Écran : en-tête facultatif, contenu qui défile, pied fixe facultatif */
@@ -193,18 +192,13 @@ const TABS: { key: Tab; label: string; mask: string }[] = [
 
 export function TabBar({ active }: { active: Tab }) {
   const router = useRouter()
-  const { resetProfile } = useStore()
   return (
     <nav className="tabbar">
       {TABS.map(t => (
         <button
           key={t.key}
           className={`tab${t.key === active ? ' tab--on' : ''}`}
-          onClick={() => {
-            // une nouvelle publication part d'un profil incomplet (scénario A1 : compléter son profil pendant la publication)
-            if (t.key === 'publish') resetProfile()
-            router.resetTo(TAB_ROOTS[t.key])
-          }}
+          onClick={() => router.resetTo(TAB_ROOTS[t.key])}
           aria-current={t.key === active ? 'page' : undefined}
         >
           <span className="tab-icon" style={{ WebkitMaskImage: `url(${t.mask})`, maskImage: `url(${t.mask})` }} aria-hidden />

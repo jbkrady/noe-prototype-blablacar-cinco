@@ -434,8 +434,8 @@ export function PublishReminder() {
   const router = useRouter()
   const { s } = useStore()
   const missing = [
-    !s.photo && { key: 'photo', title: 'Ajouter une photo', sub: 'Quelques secondes', go: () => router.push('photo-intro', { origin: 'publish-reminder' }) },
     s.identity !== 'verified' && { key: 'id', title: 'Vérifier une pièce d’identité', sub: 'Environ 2 minutes', go: () => router.push('id-intro', { origin: 'publish-reminder' }) },
+    !s.photo && { key: 'photo', title: 'Ajouter une photo', sub: 'Quelques secondes', go: () => router.push('photo-intro', { origin: 'publish-reminder' }) },
   ].filter(Boolean) as { key: string; title: string; sub: string; go: () => void }[]
 
   return (

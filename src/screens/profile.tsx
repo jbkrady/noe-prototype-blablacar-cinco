@@ -57,10 +57,11 @@ export function Profile() {
                 {steps.map((_, i) => <span key={i} className={i < done ? 'on' : ''} />)}
               </div>
               <p className="state-next">Prochaine étape</p>
-              {!s.photo ? (
-                <Button onClick={photoFlow}>Ajouter une photo</Button>
-              ) : (
+              {/* US A1 : une seule action, dans l'ordre de priorité identité puis photo */}
+              {s.identity !== 'verified' ? (
                 <Button onClick={idFlow}>Vérifier une pièce d’identité</Button>
+              ) : (
+                <Button onClick={photoFlow}>Ajouter une photo</Button>
               )}
             </section>
           )}
