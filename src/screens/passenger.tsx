@@ -175,7 +175,7 @@ export function HistoryBadge({ d }: { d: Driver }) {
   const badge = passengerBadge(d.passengerTrips)
   if (!d.newbie) return null
   if (!badge) return <span className="chip chip--new"><Star size={12} fill="currentColor" /> Nouveau</span>
-  return <span className="chip chip--blue chip--history">{badge}</span>
+  return <span className="chip chip--history"><Users size={12} /> {badge}</span>
 }
 
 function OfferCard({ o, from, to, onClick }: { o: Offer; from: string; to: string; onClick: () => void }) {
@@ -230,7 +230,7 @@ export function DriverProfile({ id }: { id: string }) {
         <div>
           <h1 className="dp-name">{d.name}</h1>
           <p className="dp-age">{d.age} ans</p>
-          {d.newbie && badge && <span className="chip chip--blue chip--history">{badge}</span>}
+          {d.newbie && badge && <span className="chip chip--history"><Users size={12} /> {badge}</span>}
           {d.superDriver && <span className="chip chip--blue">Super Driver</span>}
         </div>
       </div>

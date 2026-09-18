@@ -116,7 +116,14 @@
 .newbie-name { font-size: 15px; font-weight: 600; }
 .newbie-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .rating { display: inline-flex; align-items: center; gap: 3px; font-size: 13px; font-weight: 600; }
-.chip--history { font-size: 11px; padding: 2px 6px; }
+.chip--history {
+  font-size: 11px;
+  padding: 2px 7px;
+  color: var(--c-text);
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--c-divider-strong);
+}
+.chip--history svg { color: var(--c-text-2); }
 .newbie-price { text-align: right; font-size: 16px; font-weight: 700; }
 .newbie-price small { display: block; font-size: 11.5px; font-weight: 400; color: var(--c-text-2); white-space: nowrap; }
 

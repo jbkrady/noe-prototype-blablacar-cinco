@@ -567,7 +567,7 @@ export function PublishDescription({ tripId }: { tripId?: string }) {
         {/* B2 : message toujours affiché sous le champ, non cliquable */}
         <p className="desc-hint">
           <Smile size={30} strokeWidth={1.6} />
-          <span>{text.trim() ? 'Un petit mot augmente vos chances de trouver des passagers' : 'Ce message rassure les passagers et évite les malentendus le jour J'}</span>
+          <span>Ce message rassure les passagers et évite les malentendus le jour J</span>
         </p>
         <div className="desc-cta">
           {trip ? <Button full={false} onClick={save}>Enregistrer</Button> : <Button full={false} onClick={publish}>Publier le trajet</Button>}

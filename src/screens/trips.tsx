@@ -39,11 +39,12 @@ function TripCard({ t }: { t: Trip }) {
   const hours = Math.max(1, Math.round((t.departure.getTime() - Date.now()) / 3600000))
   const dep = hhmm(t.departure.getHours(), t.departure.getMinutes())
 
+  // US A2 : identité, photo, description par ordre de priorité ; un critère non rempli remonte au-dessus des critères remplis
   const criteria = [
-    { key: 'stops', done: t.stops.length > 0, todo: 'Ajouter des étapes', ok: 'Étapes', go: () => {} },
-    { key: 'desc', done: !!t.description, todo: 'Ajouter une description', ok: 'Description', go: () => router.push('publish-description', { tripId: t.id }) },
+    { key: 'id', done: s.identity === 'verified', todo: 'Vérifier mon identité', ok: 'Identité vérifiée', go: () => router.push('id-intro', { origin: 'trips' }) },
     { key: 'photo', done: !!s.photo, todo: 'Ajouter une photo de profil', ok: 'Photo de profil', go: () => router.push('photo-intro', { origin: 'trips' }) },
-  ]
+    { key: 'desc', done: !!t.description, todo: 'Ajouter une description', ok: 'Description', go: () => router.push('publish-description', { tripId: t.id }) },
+  ].sort((a, b) => Number(a.done) - Number(b.done))
 
   return (
     <article className={`trip${alert ? ' trip--alert' : ''}`}>

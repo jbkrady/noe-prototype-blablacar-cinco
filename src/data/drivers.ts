@@ -76,7 +76,7 @@ export const OFFERS: Offer[] = [
   { driver: 'yamina', dep: '09:15', arr: '14:50', fromSub: 'Gare de Lyon', toSub: 'Part-Dieu', price: 29 },
   { driver: 'nicolas', dep: '10:45', arr: '16:20', fromSub: 'Bercy', toSub: 'Perrache', price: 30, instant: true },
   { driver: 'ines', dep: '11:00', arr: '16:25', fromSub: 'Gare de Lyon', toSub: 'Part-Dieu', price: 29 },
-  { driver: 'jules', dep: '10:30', arr: '16:00', fromSub: 'Paris', toSub: 'Lyon', price: 30, instant: true, backSeats: true },
+  { driver: 'jules', dep: '10:30', arr: '16:00', fromSub: 'Porte Maillot', toSub: 'Part-Dieu', price: 30, instant: true, backSeats: true },
   { driver: 'ludovic', dep: '11:15', arr: '17:05', fromSub: 'Bercy', toSub: 'Part-Dieu', price: 30, backSeats: true },
   { driver: 'akram', dep: '11:30', arr: '17:20', fromSub: 'Porte d’Italie', toSub: 'Perrache', price: 30, instant: true },
   { driver: 'herve', dep: '12:00', arr: '18:10', fromSub: 'Roissy-en-Brie', toSub: 'Vaise', price: 30, eco: true },
