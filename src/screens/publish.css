@@ -205,18 +205,20 @@
 .ticks svg { flex-shrink: 0; color: var(--c-success); }
 
 /* B1 / B2 — description */
-.desc { margin-top: 24px; padding-bottom: 20px; }
+.desc { margin-top: 28px; padding-bottom: 16px; }
+/* titre de la maquette DESC TRAJET : 4 lignes */
+.title--desc { font-size: 28px; line-height: 33px; padding-top: 22px; padding-right: 44px; }
 .desc-field {
   display: block;
   width: 100%;
-  min-height: 172px;
+  min-height: 143px;
   field-sizing: content;
-  padding: 14px 16px;
+  padding: 12px 14px;
   border: 0;
   border-radius: 16px;
   background: #eef0f3;
   font: inherit;
-  font-size: 15px;
+  font-size: 14.5px;
   line-height: 1.4;
   color: var(--c-text);
   resize: none;
@@ -224,10 +226,11 @@
 }
 .desc-field::placeholder { color: var(--c-text-2); opacity: 1; }
 .desc-field:focus { box-shadow: inset 0 0 0 2px var(--c-primary); background: #fff; }
-.desc-hint { display: flex; align-items: center; gap: 14px; margin: 20px 8px 0; color: var(--c-primary); font-weight: 600; font-size: 15px; line-height: 1.35; cursor: default; }
+.desc-hint { display: flex; align-items: center; gap: 18px; margin: 22px 8px 0 24px; color: var(--c-primary); font-weight: 600; font-size: 15px; line-height: 1.35; cursor: default; }
 .desc-hint svg { flex-shrink: 0; }
-.desc-cta { display: flex; justify-content: center; margin-top: 28px; }
-.legal { margin-top: 28px; font-size: 12px; line-height: 1.4; color: var(--c-text-2); }
+.desc-foot { display: grid; justify-items: center; gap: 14px; padding: 12px 24px 18px; }
+.desc-foot .btn { min-width: 224px; }
+.legal { font-size: 12px; line-height: 1.4; color: #3a4a63; }
 .legal u { color: var(--c-primary); text-decoration: none; }
 
 /* C2 — boost */

@@ -73,3 +73,4 @@
 .cal-legend { display: flex; align-items: center; gap: 8px; padding: 12px 20px 0; font-size: 13px; color: var(--c-text-2); }
 .cal-legend-dot { width: 7px; height: 7px; border-radius: 50%; background: #f0a14e; }
 .picker-warning { margin: 16px 0; padding: 12px 14px; border-radius: 12px; background: var(--c-warning-soft); color: var(--c-warning-text); font-size: 14px; font-weight: 500; line-height: 1.4; }
+.picker-note { margin: 12px 0; font-size: 13.5px; line-height: 1.4; color: var(--c-text-2); }

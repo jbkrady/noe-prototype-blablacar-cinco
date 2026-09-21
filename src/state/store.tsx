@@ -154,6 +154,8 @@ interface Ctx {
   setDraft: (patch: Partial<Draft>) => void
   setSearch: (patch: Partial<Search>) => void
   reset: () => void
+  /** sortie d'un parcours : le profil repart de zéro (trajets, recherche, boost déjà vu et réglage de démo conservés) */
+  resetProfile: () => void
   toast: string | null
   showToast: (msg: string) => void
 }
@@ -168,6 +170,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const set: Ctx['set'] = patch => setS(prev => ({ ...prev, ...(typeof patch === 'function' ? patch(prev) : patch) }))
   const setDraft = (patch: Partial<Draft>) => setS(prev => ({ ...prev, draft: { ...prev.draft, ...patch } }))
   const setSearch = (patch: Partial<Search>) => setS(prev => ({ ...prev, search: { ...prev.search, ...patch } }))
+  const resetProfile = () =>
+    setS(prev => {
+      const blank = initial()
+      return {
+        ...prev,
+        photo: blank.photo,
+        identity: blank.identity,
+        photoAttempts: 0,
+        minibio: blank.minibio,
+        prefs: blank.prefs,
+        vehicle: blank.vehicle,
+        firstName: blank.firstName,
+        lastName: blank.lastName,
+        birthDate: blank.birthDate,
+        email: blank.email,
+        phone: blank.phone,
+        draft: newDraft(),
+      }
+    })
   const showToast = useCallback((msg: string) => {
     setToast(msg)
     window.clearTimeout(timer.current)
@@ -175,7 +196,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <StoreContext.Provider value={{ s, set, setDraft, setSearch, reset: () => setS(prev => ({ ...initial(), photoCheck: prev.photoCheck })), toast, showToast }}>
+    <StoreContext.Provider value={{ s, set, setDraft, setSearch, reset: () => setS(prev => ({ ...initial(), photoCheck: prev.photoCheck })), resetProfile, toast, showToast }}>
       {children}
     </StoreContext.Provider>
   )

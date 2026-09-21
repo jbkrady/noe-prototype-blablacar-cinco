@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, History, LocateFixed, MapPin, X } from 'lucide-react'
-import { RECENT, cityOf, sameCity, searchPlaces, type Place } from '../data/places'
+import { cityOf, sameCity, searchPlaces, type Place } from '../data/places'
 import { MONTHS_CAP, sameDay, startOfDay } from '../data/format'
 import { useRouter } from '../state/router'
 import { isComplete, useStore } from '../state/store'
@@ -9,6 +9,14 @@ import iconDate from '../assets/icon-date.png'
 import './shared.css'
 
 export type PlaceTarget = 'search-from' | 'search-to' | 'publish-from' | 'publish-to'
+
+const CURRENT_POSITION: Place = { label: '65 Rue Ordener', sub: '65 Rue Ordener, Paris' }
+const SUGGESTIONS: Record<PlaceTarget, Place[]> = {
+  'search-from': [{ label: 'Paris', sub: 'France' }],
+  'search-to': [{ label: 'Lyon', sub: 'France' }],
+  'publish-from': [{ label: 'Paris', sub: 'France' }],
+  'publish-to': [{ label: 'Capbreton', sub: 'France' }],
+}
 
 /** Saisie d'adresse avec suggestions (maquettes SUGG ADRESSE / DESTINATION) */
 export function PlacePicker({ target }: { target: PlaceTarget }) {
@@ -25,7 +33,9 @@ export function PlacePicker({ target }: { target: PlaceTarget }) {
   const other =
     target === 'search-from' ? s.search.to : target === 'search-to' ? s.search.from : target === 'publish-from' ? s.draft.to : s.draft.from
   const allowed = (p: Place) => !sameCity(p, other)
-  const found = useMemo(() => searchPlaces(query), [query])
+  // recherche passager : on ne propose que des villes (pas de rue ni de gare)
+  const isSearch = target.startsWith('search')
+  const found = useMemo(() => searchPlaces(query).filter(p => !isSearch || !p.sub.includes(',')), [query, isSearch])
   const results = found.filter(allowed)
   const typed: Place = { label: q.trim(), sub: 'France' }
   const blocked = !!query && results.length === 0 && (found.length > 0 || sameCity(typed, other))
@@ -87,14 +97,18 @@ export function PlacePicker({ target }: { target: PlaceTarget }) {
       <div className="list">
         {!query ? (
           <>
-            {target !== 'publish-to' && target !== 'search-to' && allowed({ label: '65 Rue Ordener', sub: '65 Rue Ordener, Paris' }) && (
-              <button className="row" onClick={() => pick({ label: '65 Rue Ordener', sub: '65 Rue Ordener, Paris' })}>
+            {/* départ : position actuelle + Paris ; arrivée : Lyon (recherche) ou Capbreton (publication) — saisie libre au-dessus */}
+            {target.endsWith('from') && allowed(CURRENT_POSITION) && (
+              <button className="row" onClick={() => pick(CURRENT_POSITION)}>
                 <span className="row-icon"><LocateFixed size={22} /></span>
-                <span className="row-text"><span className="row-title picker-strong">Utiliser ma position actuelle</span></span>
+                <span className="row-text">
+                  <span className="row-title picker-strong">Utiliser ma position actuelle</span>
+                  <span className="row-sub">{CURRENT_POSITION.sub}</span>
+                </span>
                 <ChevronRight className="row-chev" size={22} />
               </button>
             )}
-            {RECENT.filter(allowed).map(p => (
+            {(SUGGESTIONS[target] ?? []).filter(allowed).map(p => (
               <PlaceRow key={p.sub + p.label} p={p} icon={<History size={22} />} onClick={() => pick(p)} />
             ))}
           </>

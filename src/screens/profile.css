@@ -80,3 +80,4 @@
 .psec--edit .check { min-height: 48px; }
 .edit-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.me-pen--ok { background: var(--c-success); }

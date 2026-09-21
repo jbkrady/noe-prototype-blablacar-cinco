@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { BatteryFull, SignalHigh, Wifi } from 'lucide-react'
 import { useRouter } from '../state/router'
+import { useStore } from '../state/store'
 import './PhoneFrame.css'
 
 const W = 360
@@ -9,6 +10,8 @@ const H = 800
 /** Sur ordinateur : téléphone Android 360×800 avec barres système. Sur mobile : l'app occupe l'écran. */
 export function PhoneFrame({ children }: { children: ReactNode }) {
   const router = useRouter()
+  // bouton Accueil d'Android : on quitte le parcours, le profil repart de zéro
+  const { resetProfile } = useStore()
   const [vp, setVp] = useState({ w: window.innerWidth, h: window.innerHeight })
   const [now, setNow] = useState(new Date())
   useEffect(() => {
@@ -40,7 +43,7 @@ export function PhoneFrame({ children }: { children: ReactNode }) {
                 <path d="M5 4.5v11M10 4.5v11M15 4.5v11" />
               </svg>
             </button>
-            <button aria-label="Accueil" onClick={() => router.resetTo('home')}>
+            <button aria-label="Accueil" onClick={() => { resetProfile(); router.resetTo('home') }}>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#4a4a4a" strokeWidth="1.8">
                 <rect x="3.5" y="3.5" width="13" height="13" rx="4.5" />
               </svg>

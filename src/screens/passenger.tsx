@@ -6,6 +6,7 @@ import { useRouter } from '../state/router'
 import { useStore } from '../state/store'
 import { DRIVERS, OFFERS, inShowcase, passengerBadge, showcase, type Driver, type Offer } from '../data/drivers'
 import { shortDate } from '../data/format'
+import { cityOf } from '../data/places'
 import { Avatar, BackBar, Button, CheckDot, Screen, Sheet, Stepper, TabBar } from '../ui/kit'
 import logo from '../assets/logo.png'
 import train from '../assets/train.png'
@@ -111,7 +112,7 @@ export function Results() {
           <div className="res-query">
             <button className="icon-btn icon-btn--dark" aria-label="Retour" onClick={router.back}><ChevronLeft size={22} /></button>
             <div className="res-query-text">
-              <p className="res-route">{from.label}, France <span className="arrow">→</span> {to.label}, France</p>
+              <p className="res-route">{cityOf(from)}, France <span className="arrow">→</span> {cityOf(to)}, France</p>
               <p className="res-sub">{shortDate(date)}{s.search.returnDate ? ` – retour ${shortDate(s.search.returnDate)}` : ''}, {passengers} adulte{passengers > 1 ? 's' : ''} (27 à 59 ans), aucune carte</p>
             </div>
             <button className="res-filter">Filtrer</button>
@@ -159,7 +160,7 @@ export function Results() {
             </section>
           )}
           {mainOffers.map(o => (
-            <OfferCard key={o.driver} o={o} from={from.label} to={to.label} onClick={() => router.push('driver', { id: o.driver, offer: o })} />
+            <OfferCard key={o.driver} o={o} from={cityOf(from)} to={cityOf(to)} onClick={() => router.push('driver', { id: o.driver, offer: o })} />
           ))}
           <div className="res-alert">
             <Button variant="secondary" full={false}>Créer une alerte</Button>

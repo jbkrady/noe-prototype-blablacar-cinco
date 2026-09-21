@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Car, ChevronRight, CircleAlert, CirclePlus, Hourglass, Pencil, UserRound } from 'lucide-react'
+import { Car, Check, ChevronRight, CircleAlert, CirclePlus, Hourglass, Pencil, UserRound } from 'lucide-react'
 import { useRouter } from '../state/router'
 import { DEFAULT_PHOTO, isComplete, profileSteps, useStore, type PhotoCheckMode, type Pref, type Vehicle } from '../state/store'
 import photoLunettes from '../assets/photo-lunettes.png'
@@ -37,7 +37,9 @@ export function Profile() {
           <button className="me" onClick={photoFlow}>
             <span className="me-avatar">
               {s.photo ? <Avatar src={s.photo} size={56} /> : <span className="me-ph"><UserRound size={34} /></span>}
-              <span className="me-pen"><Pencil size={11} /></span>
+              {s.photo
+                ? <span className="me-pen me-pen--ok" aria-label="Photo validée"><Check size={12} strokeWidth={3.4} /></span>
+                : <span className="me-pen"><Pencil size={11} /></span>}
             </span>
             <span className="me-id"><b>{s.firstName}</b><small>Débutante</small></span>
             <ChevronRight size={22} className="muted" />
@@ -57,11 +59,11 @@ export function Profile() {
                 {steps.map((_, i) => <span key={i} className={i < done ? 'on' : ''} />)}
               </div>
               <p className="state-next">Prochaine étape</p>
-              {/* US A1 : une seule action, dans l'ordre de priorité identité puis photo */}
-              {s.identity !== 'verified' ? (
-                <Button onClick={idFlow}>Vérifier une pièce d’identité</Button>
-              ) : (
+              {/* une seule action : la photo d'abord (prioritaire), puis la pièce d'identité */}
+              {!s.photo ? (
                 <Button onClick={photoFlow}>Ajouter une photo</Button>
+              ) : (
+                <Button onClick={idFlow}>Vérifier une pièce d’identité</Button>
               )}
             </section>
           )}
@@ -222,15 +224,19 @@ function VehicleSection() {
 
 type Origin = { origin: string }
 
-/** Photo soumise selon le réglage de démo : 1re photo avec lunettes (refusée), puis photo conforme (maquettes Figma) */
-const nextPhoto = (mode: PhotoCheckMode, attempts: number) =>
-  mode === 'reject-first' && attempts === 0 ? photoLunettes : DEFAULT_PHOTO
+/** Refus de la 1re photo : uniquement dans le parcours Profil (flow Figma « Modification de profil ») ;
+ *  pendant la publication ou depuis Vos trajets, la photo est acceptée directement (flow Figma PUBLIER UN TRAJET) */
+const rejectsNext = (mode: PhotoCheckMode, attempts: number, origin: string) =>
+  origin === 'profile' && mode === 'reject-first' && attempts === 0
+
+const nextPhoto = (mode: PhotoCheckMode, attempts: number, origin: string) =>
+  rejectsNext(mode, attempts, origin) ? photoLunettes : DEFAULT_PHOTO
 
 /** Consignes + choix : les deux boutons enchaînent directement sur la vérification (workflow Figma) */
 export function PhotoIntro({ origin }: Origin) {
   const router = useRouter()
   const { s } = useStore()
-  const go = () => router.push('photo-check', { origin, photo: nextPhoto(s.photoCheck, s.photoAttempts) })
+  const go = () => router.push('photo-check', { origin, photo: nextPhoto(s.photoCheck, s.photoAttempts, origin) })
   return (
     <Screen header={<BackBar />}>
       <img className="photo-sample" src={DEFAULT_PHOTO} alt="Exemple de photo conforme" />
@@ -256,13 +262,11 @@ export function PhotoCheck({ origin, photo }: Origin & { photo: string }) {
         showToast('L’action n’a pas pu aboutir. Réessayer plus tard')
         return
       }
-      const rejected = s.photoCheck === 'reject-first' && s.photoAttempts === 0
+      const rejected = rejectsNext(s.photoCheck, s.photoAttempts, origin)
       set(prev => ({ photoAttempts: prev.photoAttempts + 1, ...(rejected ? {} : { photo }) }))
       if (rejected) router.replace('photo-rejected', { origin, photo })
-      else {
-        router.backTo(origin)
-        showToast('Votre photo est acceptée et en ligne')
-      }
+      // photo acceptée : retour à l'écran d'origine, où le bandeau « Votre photo est en ligne » et le badge vert suffisent
+      else router.backTo(origin)
     }, slow ? 15000 : 3000)
     return () => clearTimeout(t)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -286,7 +290,7 @@ export function PhotoCheck({ origin, photo }: Origin & { photo: string }) {
 export function PhotoRejected({ origin, photo }: Origin & { photo: string }) {
   const router = useRouter()
   const { s } = useStore()
-  const retry = () => router.replace('photo-check', { origin, photo: nextPhoto(s.photoCheck, s.photoAttempts) })
+  const retry = () => router.replace('photo-check', { origin, photo: nextPhoto(s.photoCheck, s.photoAttempts, origin) })
   return (
     <Screen header={<BackBar onBack={() => router.backTo(origin)} />}>
       <span className="check-photo check-photo--small">

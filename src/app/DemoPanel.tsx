@@ -7,9 +7,9 @@ export function DemoPanel({ current, onStart, onReset }: { current: string; onSt
   const { s, set } = useStore()
   const note = NOTES[current]
   return (
-    <aside className="panel">
+    <aside className="panel" lang="fr">
       <header>
-        <p className="panel-kicker">BlaBlaCar · Newbie drivers</p>
+        <p className="panel-kicker">Noé · BlaBlaCar · Newbie drivers</p>
         <h1 className="panel-title">Prototype interactif</h1>
         <p className="panel-disclaimer">
           Prototype réalisé dans le cadre de la formation Product Manager de Noé. Ce n’est pas une application officielle BlaBlaCar.
@@ -25,7 +25,7 @@ export function DemoPanel({ current, onStart, onReset }: { current: string; onSt
             <p className="panel-note">{note.note}</p>
           </>
         ) : (
-          <p className="panel-note panel-note--muted">Étape du parcours existant, sans changement.</p>
+          <p className="panel-note panel-note--muted">Étape inchangée de l’application.</p>
         )}
       </section>
 
@@ -58,7 +58,7 @@ export function DemoPanel({ current, onStart, onReset }: { current: string; onSt
         <label className="select">
           Vérification photo
           <select value={s.photoCheck} onChange={e => set({ photoCheck: e.target.value as PhotoCheckMode, photoAttempts: 0 })}>
-            <option value="reject-first">1re photo refusée, puis acceptée</option>
+            <option value="reject-first">1re photo refusée, puis acceptée (profil)</option>
             <option value="accepted">Toujours acceptée</option>
             <option value="timeout">Trop longue (délai de 15 s)</option>
           </select>

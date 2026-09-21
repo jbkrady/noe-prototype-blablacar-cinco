@@ -434,8 +434,8 @@ export function PublishReminder() {
   const router = useRouter()
   const { s } = useStore()
   const missing = [
-    s.identity !== 'verified' && { key: 'id', title: 'Vérifier une pièce d’identité', sub: 'Environ 2 minutes', go: () => router.push('id-intro', { origin: 'publish-reminder' }) },
     !s.photo && { key: 'photo', title: 'Ajouter une photo', sub: 'Quelques secondes', go: () => router.push('photo-intro', { origin: 'publish-reminder' }) },
+    s.identity !== 'verified' && { key: 'id', title: 'Vérifier une pièce d’identité', sub: 'Environ 2 minutes', go: () => router.push('id-intro', { origin: 'publish-reminder' }) },
   ].filter(Boolean) as { key: string; title: string; sub: string; go: () => void }[]
 
   return (
@@ -547,8 +547,21 @@ export function PublishDescription({ tripId }: { tripId?: string }) {
   }
 
   return (
-    <Screen header={<BackBar />}>
-      <Title>Informez vos passagers des détails utiles pour leur trajet</Title>
+    <Screen
+      header={<BackBar />}
+      // maquette DESC TRAJET : bouton et mention légale toujours visibles en bas de l'écran
+      footer={
+        <div className="desc-foot">
+          {trip ? <Button full={false} onClick={save}>Enregistrer</Button> : <Button full={false} onClick={publish}>Publier le trajet</Button>}
+          {!trip && (
+            <p className="legal">
+              Dans le cadre d’un trajet en covoiturage, vous êtes soumis(e) aux dispositions des <u>articles 1101 et suivants du code civil</u>. En publiant cette offre vous reconnaissez être non-professionnel(le). Dans le cas contraire, vous encourez les sanctions prévues à l’article L132-2 du Code de la consommation.
+            </p>
+          )}
+        </div>
+      }
+    >
+      <Title className="title--desc">Informez vos passagers des détails utiles pour leur trajet</Title>
       <div className="pad desc">
         <textarea
           className="desc-field"
@@ -569,14 +582,6 @@ export function PublishDescription({ tripId }: { tripId?: string }) {
           <Smile size={30} strokeWidth={1.6} />
           <span>Ce message rassure les passagers et évite les malentendus le jour J</span>
         </p>
-        <div className="desc-cta">
-          {trip ? <Button full={false} onClick={save}>Enregistrer</Button> : <Button full={false} onClick={publish}>Publier le trajet</Button>}
-        </div>
-        {!trip && (
-          <p className="legal">
-            Dans le cadre d’un trajet en covoiturage, vous êtes soumis(e) aux dispositions des <u>articles 1101 et suivants du code civil</u>. En publiant cette offre vous reconnaissez être non-professionnel(le). Dans le cas contraire, vous encourez les sanctions prévues à l’article L132-2 du Code de la consommation.
-          </p>
-        )}
       </div>
     </Screen>
   )
