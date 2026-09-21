@@ -1,15 +1,15 @@
 // Panneau de présentation : ce que montre l'écran affiché.
 
-export const NOTES: Record<string, { note: string; created?: boolean }> = {
+export const NOTES: Record<string, { note: string }> = {
   profile: { note: 'Une seule action à la fois, et la jauge avance à chaque étape.' },
   'photo-intro': { note: 'Refusée puis acceptée dans le profil, acceptée directement en publication.' },
   'photo-check': { note: 'Vérification en quelques secondes, sans quitter l’application.' },
   'photo-rejected': { note: 'Refus affiché dans l’application, avec les règles pour réessayer.' },
-  'id-intro': { note: 'Écran créé : pas de maquette Figma pour l’identité.', created: true },
-  'id-check': { note: 'Vérification simulée, validée en quelques secondes.', created: true },
+  'id-intro': { note: 'Choix de la pièce d’identité à vérifier.' },
+  'id-check': { note: 'Vérification de la pièce en quelques secondes.' },
   'publish-reminder': { note: 'Tout ce qui manque au profil, sans bloquer la publication.' },
   'publish-description': { note: 'L’exemple s’efface au toucher, le message dessous reste affiché.' },
-  boost: { note: 'Affiché une seule fois, quand photo et identité sont validées.', created: true },
+  boost: { note: 'Affiché une seule fois, quand photo et identité sont validées.' },
   trips: { note: 'Départ dans moins de 24 h sans passager : le trajet est signalé en orange.' },
   results: { note: 'Encart réservé aux nouveaux conducteurs vérifiés, sans trajet passager.' },
   driver: { note: 'Badge selon le profil : Nouveau, trajets passager ou Super Driver.' },

@@ -20,10 +20,7 @@ export function DemoPanel({ current, onStart, onReset }: { current: string; onSt
         <p className="panel-label">Écran affiché</p>
         <p className="panel-screen">{ROUTES[current]?.title}</p>
         {note ? (
-          <>
-            {note.created && <div className="panel-tags"><span className="tag tag--created">Créé hors Figma</span></div>}
-            <p className="panel-note">{note.note}</p>
-          </>
+          <p className="panel-note">{note.note}</p>
         ) : (
           <p className="panel-note panel-note--muted">Étape inchangée de l’application.</p>
         )}
