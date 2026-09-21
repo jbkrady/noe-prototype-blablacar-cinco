@@ -1,0 +1,73 @@
+# CLAUDE.md — prototype BlaBlaCar · Newbie drivers
+
+Prototype interactif d'application Android (360×800) pour présenter aux sponsors BlaBlaCar les user stories du projet « newbie drivers ». Réalisé dans le cadre de la formation Product Manager de Noé. Voir README.md pour la présentation fonctionnelle.
+
+## Façon de travailler avec l'utilisateur
+
+- **Répondre en français**, de façon **courte** : ce qui a été fait, en quelques points. Pas de longs récapitulatifs.
+- **Montrer en local avant de pousser.** Tester soi-même dans le navigateur, puis attendre « ok pour pousser » avant tout `git push` sur `main` (le push déploie en production).
+- **Tester soi-même chaque changement** avant de rendre la main : navigateur intégré (vue ordinateur 1280×900 et téléphone 360×732 ou 390×844), parcours joué de bout en bout, console vide, `npm run build` sans erreur.
+- **Poser la question** quand une demande est ambiguë (plusieurs lectures possibles) plutôt que deviner : l'utilisateur tape vite et des mots manquent parfois (« il ne faut que » peut vouloir dire « il ne faut pas que »).
+- Ce qui est décidé par l'utilisateur prime sur la maquette et sur les US. Quand un changement contredit une US, le signaler en une phrase, puis faire ce qui est demandé.
+
+## Sources de vérité
+
+- **Backlog JIRA** « PM Noé Team », projet `SCRUM`, cloudId `453d1c29-c443-413d-ace8-d7b3014e8ce7` (site jeanbaptistekrady.atlassian.net). US du périmètre :
+  - A1 SCRUM-8 : carte « État du profil » et étape de rappel pendant la publication
+  - A2 SCRUM-9 : rappel sur un trajet dans moins de 24 h sans passager (Vos trajets)
+  - A3 SCRUM-10 : vérification de la photo dans l'application (refus, délai de 15 s ; plus de toast à l'acceptation)
+  - B1 SCRUM-11 / B2 SCRUM-12 : texte d'exemple et message sous la description du trajet
+  - C1 SCRUM-13 : encart des nouveaux conducteurs vérifiés dans la recherche
+  - C2 SCRUM-14 : message de boost en fin de publication, une seule fois
+  - C3 SCRUM-15 : badge « N Trajets Passager » / « ★ Nouveau »
+  Ne modifier une US dans JIRA que sur demande explicite, en montrant le texte avant d'écrire.
+- **Figma** « BlaBlaCar 5 », fileKey `UnHpC3FL9BRJzvbNZ0vnNv`, page PROTOS. Sections du périmètre : « PUBLIER UN TRAJET », « Modification de profil et sanity check (Amélie) », « Référencement Newbie ». **Hors périmètre** : l'écran « Flows » et la section « Identification des conducteurs - Onboarding (JB) ». Écran de référence de la description : **DESC TRAJET** (10:1090).
+- Figma est la **référence visuelle** ; les écrans sont **recodés en React** (une première version à base d'images Figma cliquables a été rejetée : l'utilisateur veut une vraie app manipulable).
+
+## Décisions produit en place (ne pas défaire sans demande)
+
+- **Parcours étanches** : ce qu'on fait dans un parcours reste tant qu'on y reste ; quitter l'onglet (tab bar vers un autre onglet, bouton Accueil Android, parcours lancé depuis le panneau) remet le profil à zéro via `resetProfile()`. Les trajets publiés, la recherche, le témoin « boost déjà vu » et le réglage de démo sont conservés.
+- **Photo** : acceptée directement pendant la publication et depuis Vos trajets ; refus puis acceptation **uniquement depuis le Profil** (`rejectsNext` dans `profile.tsx`). Pas de sélecteur de fichiers : les boutons enchaînent sur la vérification avec les photos de la maquette (lunettes = refusée, Coralie = acceptée).
+- **Ordre des étapes** : la **photo avant la pièce d'identité** partout (profil, rappel de publication, Vos trajets).
+- **Encart C1** : seulement les vrais nouveaux (0 trajet passager) avec photo, identité **et** numéro vérifiés (Feroze, Yamina). Les débutants qui ont déjà voyagé (Nicolas 13, Inès 4) restent dans la liste principale avec leur badge. Badge « N Trajets Passager » en bleu, comme « Super Driver », avec une icône de passagers.
+- **Adresses** (champs vides à l'ouverture, saisie libre toujours possible) : départ = « Utiliser ma position actuelle » (65 Rue Ordener, Paris) + Paris ; arrivée = Lyon pour la recherche, Capbreton pour la publication. On ne peut pas choisir la même ville au départ et à l'arrivée ; en recherche, seules des villes sont proposées.
+- **Calendrier de publication** : à partir du lendemain ; jours où un trajet existe déjà grisés (un seul trajet par jour, retour compris).
+- **Toasts** : seulement le délai dépassé de l'A3 et la limite de 20 dates. Pas de toast pour les actions hors périmètre (boutons sans effet).
+- **Écran Description** : aligné sur DESC TRAJET ; bouton « Publier le trajet » et mention légale fixés en bas de l'écran.
+- **Panneau de présentation** : en tête « Noé · BlaBlaCar · Newbie drivers » + mention de la formation Noé. Explications d'écran de **deux lignes maximum**, texte justifié, **aucun tiret** (ni césure, ni « — » dans les titres), **aucune mention de Figma, des US, de SCRUM ou d'écran « créé »**.
+- Coordonnées de démo anonymisées : `contact@blablacar-cinco.com`, `+33 6 79 37 XX XX`.
+
+## Architecture
+
+- `src/state/store.tsx` : état global (profil, trajets, brouillon de publication, recherche, réglages de démo) et règles métier (`isComplete`, `needsPreDepartureReminder`, `boostEligible`, `resetProfile`).
+- `src/state/router.tsx` : pile d'écrans (`push`, `replace`, `back`, `backTo`, `resetTo`). En développement, le routeur est exposé sur `window.__router` pour les tests (`window.__router.resetTo('results')`).
+- `src/app/routes.tsx` : table nom de route → composant + titre du panneau (titres sans tiret, séparateur « : »).
+- `src/app/notes.ts` : textes du panneau, par nom de route.
+- `src/ui/kit.tsx` : composants communs. `Screen` (en-tête / corps qui défile / pied fixe), `TabBar` (5 colonnes égales, icônes = masques PNG découpés dans la Navbar Figma, `src/assets/tabmask/`), `Avatar` (coche de vérification ronde ajoutée par l'app, identique pour tous).
+- `src/assets/` : visuels découpés dans les exports Figma (avatars, photos de Coralie, illustrations, cartes nettoyées de leurs boutons incrustés, logo).
+- Couleurs et polices : `src/tokens.css` (bleu `#0066D4`, bleu nuit `#001536`, Poppins pour les titres, Inter pour le texte).
+
+## Commandes
+
+```bash
+npm run dev      # serveur local http://localhost:5173 (config de lancement : .claude/launch.json, nom « prototype »)
+npm run build    # tsc -b + vite build → dist/
+npx tsc -b       # vérification des types seule
+```
+
+Déploiement : `git push` sur `main` → Vercel redéploie automatiquement (≈ 30 à 40 s). Vérifier la mise en ligne en comparant le nom du bundle `assets/index-*.js` de `dist/index.html` avec celui servi par https://noe-prototype-blablacar-cinco.vercel.app. Terminer les messages de commit par la ligne de co-auteur demandée par l'environnement.
+
+## Pièges connus
+
+- **Connecteur Figma (offre Starter)** : bloqué après quelques appels. Pour réexporter, faire lancer par l'utilisateur `node scripts/export-figma.mjs` (API REST, un seul appel, token demandé au lancement). L'option `--icons` écrit des SVG dans `src/assets/tabbar/`, que l'app n'utilise plus (elle utilise `src/assets/tabmask/`).
+- **Connecteur Vercel** : n'a pas accès à l'espace personnel `jeanbaptistekrady-9091` (erreur 403). Déployer en poussant sur GitHub.
+- **Navigateur intégré** : avec une taille de fenêtre émulée, les clics souris réels peuvent ne pas arriver ; piloter par `element.click()` en JavaScript et vérifier par captures. Les captures prises juste après une navigation montrent souvent l'écran en pleine animation de glissement : attendre ~800 ms.
+- **Playwright** : son Chrome n'atteint pas toujours `localhost:5173` ; l'utiliser pour le site en ligne.
+- **Conteneurs qui défilent tout seuls** : utiliser `overflow: clip` (et non `hidden`) sur les conteneurs qui ne doivent pas défiler, sinon l'apparition d'un élément (étiquette sur la carte) peut décaler tout l'écran.
+- **Mode plein écran mobile** : la classe `device--bare` ne doit pas hériter du style du cadre téléphone (`device`), sinon coins arrondis et marges parasites.
+- Le serveur de développement s'arrête parfois entre deux sessions : le relancer avec la configuration « prototype ».
+- Python système en 3.9 : pas de `match` ni d'antislash dans les f-strings ; un venv avec Pillow et qrcode existe dans le dossier temporaire de session, pas dans le projet.
+
+## Présentation (hors dépôt)
+
+La slide 12 « 08 / 14 » du deck « Présentation Blabla Car.pptx » contient le lien de la démo et un QR code (fichiers générés dans ~/Downloads). Le rendu des slides se fait en exportant en PDF avec Microsoft PowerPoint via AppleScript (LibreOffice n'est pas installé).
