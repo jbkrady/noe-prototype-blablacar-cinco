@@ -145,7 +145,7 @@ export function Results() {
                   const o = OFFERS.find(x => x.driver === d.id)!
                   return (
                     <button key={d.id} className="newbie" onClick={() => router.push('driver', { id: d.id, offer: o })}>
-                      <Avatar src={d.photo} size={40} verified={!d.framed} />
+                      <Avatar src={d.photo} size={40} verified={d.verified} />
                       <span className="newbie-id">
                         <span className="newbie-name">{d.name}</span>
                         <span className="chip chip--new"><Star size={12} fill="currentColor" /> Nouveau</span>
@@ -194,7 +194,7 @@ function OfferCard({ o, from, to, onClick }: { o: Offer; from: string; to: strin
       </span>
       <span className="offer-bottom">
         <Car size={20} className="muted" />
-        <Avatar src={d.photo} letter={d.name[0]} size={36} verified={d.verified && !d.framed} />
+        <Avatar src={d.photo} letter={d.name[0]} size={36} verified={d.verified} />
         <span className="offer-driver">
           <span>{d.name}</span>
           {d.rating && <small><Star size={12} fill="currentColor" /> {d.rating.toString().replace('.', ',')}</small>}
@@ -226,7 +226,7 @@ export function DriverProfile({ id }: { id: string }) {
     <Screen header={<BackBar />} footer={<TabBar active="search" />}>
       <div className="dp-head">
         {d.framed
-          ? <Avatar src={d.photo} size={100} />
+          ? <Avatar src={d.photo} size={100} verified={d.verified} />
           : <span className="dp-ring"><Avatar src={d.photo} letter={d.name[0]} size={92} verified={d.verified} /></span>}
         <div>
           <h1 className="dp-name">{d.name}</h1>
