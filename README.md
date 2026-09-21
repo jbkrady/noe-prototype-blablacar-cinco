@@ -35,62 +35,9 @@ Règles utiles pendant une démo :
 
 ## Lancer en local
 
-Prérequis : Node.js 20 ou plus récent.
-
 ```bash
 npm install
 npm run dev
 ```
 
-Puis ouvrir http://localhost:5173.
-
-## Construire et publier
-
-```bash
-npm run build
-```
-
-Le site statique est généré dans `dist/`. Le dépôt GitHub `jbkrady/noe-prototype-blablacar-cinco` est relié à Vercel : **chaque push sur `main` redéploie automatiquement le site** en moins d'une minute, à la même adresse. Pour voir la nouvelle version, un simple rechargement (Cmd+R) suffit.
-
-## Organisation du code
-
-```
-src/
-  App.tsx              assemblage : cadre téléphone, écran courant, toast, panneau de démo
-  app/
-    PhoneFrame.tsx     cadre Android 360×800 (ordinateur) ou plein écran (mobile), barre système
-    DemoPanel.tsx      panneau de présentation
-    notes.ts           textes du panneau (explication de chaque écran, parcours)
-    routes.tsx         table des écrans (nom de route → composant, titre affiché)
-  screens/
-    passenger.tsx      accueil, résultats de recherche, fiche conducteur
-    publish.tsx        tout le parcours de publication, rappel de profil, description, boost
-    profile.tsx        profil, sections modifiables, photo, pièce d'identité
-    trips.tsx          Vos trajets, Messages
-    shared.tsx         saisie d'adresse, calendrier
-  state/
-    store.tsx          état de la démo (profil, trajets, recherche, brouillon de publication) et règles métier
-    router.tsx         navigation par pile d'écrans (avant, retour, retour à un écran, remise à zéro)
-  data/
-    drivers.ts         conducteurs de la recherche, règles de l'encart et du badge passager
-    places.ts          villes et adresses proposées
-    format.ts          dates et heures en français
-  ui/kit.tsx           composants communs (écran, boutons, listes, cases, stepper, tab bar, avatar…)
-  tokens.css           couleurs et polices
-  assets/              photos, illustrations, cartes et icônes de tab bar, découpées dans les maquettes Figma
-scripts/
-  export-figma.mjs     export des écrans Figma en PNG (référence visuelle) et des icônes de tab bar
-```
-
-Stack : Vite, React 19, TypeScript, icônes lucide-react. Pas de backend : tout l'état vit en mémoire dans le navigateur.
-
-## Mettre à jour les visuels depuis Figma
-
-Le fichier Figma « BlaBlaCar 5 » est sur l'offre Starter : son connecteur limite fortement le nombre d'appels. Pour réexporter les écrans de référence, on passe par l'API REST de Figma, en un seul appel :
-
-```bash
-node scripts/export-figma.mjs          # écrans de PROTOS en PNG dans design-ref/screens/ (non versionné)
-node scripts/export-figma.mjs --icons  # icônes de la tab bar en SVG dans src/assets/tabbar/
-```
-
-Le script demande un **token personnel Figma** au lancement (Figma → Settings → Security → Personal access tokens, droit « File content : Read-only ») et ne l'enregistre nulle part.
+Puis ouvrir http://localhost:5173. Chaque mise à jour poussée sur GitHub est publiée automatiquement sur le lien de la démo.

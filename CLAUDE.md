@@ -47,6 +47,49 @@ Prototype interactif d'application Android (360×800) pour présenter aux sponso
 - `src/assets/` : visuels découpés dans les exports Figma (avatars, photos de Coralie, illustrations, cartes nettoyées de leurs boutons incrustés, logo).
 - Couleurs et polices : `src/tokens.css` (bleu `#0066D4`, bleu nuit `#001536`, Poppins pour les titres, Inter pour le texte).
 
+## Organisation du code
+
+```
+src/
+  App.tsx              assemblage : cadre téléphone, écran courant, toast, panneau de démo
+  app/
+    PhoneFrame.tsx     cadre Android 360×800 (ordinateur) ou plein écran (mobile), barre système
+    DemoPanel.tsx      panneau de présentation
+    notes.ts           textes du panneau (explication de chaque écran, parcours)
+    routes.tsx         table des écrans (nom de route → composant, titre affiché)
+  screens/
+    passenger.tsx      accueil, résultats de recherche, fiche conducteur
+    publish.tsx        tout le parcours de publication, rappel de profil, description, boost
+    profile.tsx        profil, sections modifiables, photo, pièce d'identité
+    trips.tsx          Vos trajets, Messages
+    shared.tsx         saisie d'adresse, calendrier
+  state/
+    store.tsx          état de la démo (profil, trajets, recherche, brouillon de publication) et règles métier
+    router.tsx         navigation par pile d'écrans (avant, retour, retour à un écran, remise à zéro)
+  data/
+    drivers.ts         conducteurs de la recherche, règles de l'encart et du badge passager
+    places.ts          villes et adresses proposées
+    format.ts          dates et heures en français
+  ui/kit.tsx           composants communs (écran, boutons, listes, cases, stepper, tab bar, avatar…)
+  tokens.css           couleurs et polices
+  assets/              photos, illustrations, cartes et icônes de tab bar, découpées dans les maquettes Figma
+scripts/
+  export-figma.mjs     export des écrans Figma en PNG (référence visuelle) et des icônes de tab bar
+```
+
+Stack : Vite, React 19, TypeScript, icônes lucide-react. Pas de backend : tout l'état vit en mémoire dans le navigateur.
+
+## Exporter les visuels depuis Figma
+
+Le fichier Figma « BlaBlaCar 5 » est sur l'offre Starter : son connecteur limite fortement le nombre d'appels. Pour réexporter les écrans de référence, on passe par l'API REST de Figma, en un seul appel :
+
+```bash
+node scripts/export-figma.mjs          # écrans de PROTOS en PNG dans design-ref/screens/ (non versionné)
+node scripts/export-figma.mjs --icons  # icônes de la tab bar en SVG dans src/assets/tabbar/
+```
+
+Le script demande un **token personnel Figma** au lancement (Figma → Settings → Security → Personal access tokens, droit « File content : Read-only ») et ne l'enregistre nulle part.
+
 ## Commandes
 
 ```bash
