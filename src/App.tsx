@@ -32,7 +32,7 @@ function Prototype() {
             current={r.name}
             onStart={route => {
               // chaque parcours de démo repart de zéro : conductrice sans photo ni pièce d'identité
-              reset()
+              reset(route === 'trips')
               router.resetTo(route)
               setPanelOpen(false)
             }}

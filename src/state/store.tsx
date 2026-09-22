@@ -121,7 +121,7 @@ const initial = (): AppState => ({
       id: 't1',
       from: { label: 'Paris', sub: 'France' },
       to: { label: 'Capbreton', sub: 'France' },
-      stops: ['Versailles', 'Poitiers'],
+      stops: [],
       departure: next8am(),
       durationMin: 490,
       price: 30,
@@ -153,9 +153,10 @@ interface Ctx {
   set: (patch: Partial<AppState> | ((s: AppState) => Partial<AppState>)) => void
   setDraft: (patch: Partial<Draft>) => void
   setSearch: (patch: Partial<Search>) => void
-  reset: () => void
+  /** withPhoto : parcours Vos trajets, la conductrice a déjà sa photo (maquette MES TRAJETS V3) */
+  reset: (withPhoto?: boolean) => void
   /** sortie d'un parcours : le profil repart de zéro (trajets, recherche, boost déjà vu et réglage de démo conservés) */
-  resetProfile: () => void
+  resetProfile: (withPhoto?: boolean) => void
   toast: string | null
   showToast: (msg: string) => void
 }
@@ -170,12 +171,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const set: Ctx['set'] = patch => setS(prev => ({ ...prev, ...(typeof patch === 'function' ? patch(prev) : patch) }))
   const setDraft = (patch: Partial<Draft>) => setS(prev => ({ ...prev, draft: { ...prev.draft, ...patch } }))
   const setSearch = (patch: Partial<Search>) => setS(prev => ({ ...prev, search: { ...prev.search, ...patch } }))
-  const resetProfile = () =>
+  const resetProfile = (withPhoto = false) =>
     setS(prev => {
       const blank = initial()
       return {
         ...prev,
-        photo: blank.photo,
+        photo: withPhoto ? DEFAULT_PHOTO : blank.photo,
         identity: blank.identity,
         photoAttempts: 0,
         minibio: blank.minibio,
@@ -196,7 +197,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <StoreContext.Provider value={{ s, set, setDraft, setSearch, reset: () => setS(prev => ({ ...initial(), photoCheck: prev.photoCheck })), resetProfile, toast, showToast }}>
+    <StoreContext.Provider value={{ s, set, setDraft, setSearch, reset: (withPhoto = false) => setS(prev => ({ ...initial(), photo: withPhoto ? DEFAULT_PHOTO : null, photoCheck: prev.photoCheck })), resetProfile, toast, showToast }}>
       {children}
     </StoreContext.Provider>
   )

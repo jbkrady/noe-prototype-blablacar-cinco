@@ -202,7 +202,7 @@ export function TabBar({ active }: { active: Tab }) {
           className={`tab${t.key === active ? ' tab--on' : ''}`}
           onClick={() => {
             // parcours étanches : quitter un parcours remet le profil à zéro (l'onglet déjà actif ne change rien)
-            if (t.key !== active) resetProfile()
+            if (t.key !== active) resetProfile(t.key === 'trips')
             router.resetTo(TAB_ROOTS[t.key])
           }}
           aria-current={t.key === active ? 'page' : undefined}

@@ -43,7 +43,7 @@ function TripCard({ t }: { t: Trip }) {
   const criteria = [
     { key: 'stops', done: t.stops.length > 0, todo: 'Ajouter des étapes', ok: 'Étapes', go: undefined },
     { key: 'desc', done: !!t.description, todo: 'Ajouter une description', ok: 'Description', go: () => router.push('publish-description', { tripId: t.id }) },
-    { key: 'photo', done: !!s.photo, todo: 'Ajouter une photo de profil', ok: 'Photo de profil', go: () => router.push('photo-intro', { origin: 'trips' }) },
+    { key: 'photo', done: !!s.photo, todo: 'Ajouter une photo de profil', ok: 'Ajouter une photo de profil', go: () => router.push('photo-intro', { origin: 'trips' }) },
   ]
 
   return (
