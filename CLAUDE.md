@@ -26,9 +26,10 @@ Prototype interactif d'application Android (360×800) pour présenter aux sponso
 
 ## Décisions produit en place (ne pas défaire sans demande)
 
-- **Parcours étanches** : ce qu'on fait dans un parcours reste tant qu'on y reste ; quitter l'onglet (tab bar vers un autre onglet, bouton Accueil Android, parcours lancé depuis le panneau) remet le profil à zéro via `resetProfile()`. Les trajets publiés, la recherche, le témoin « boost déjà vu » et le réglage de démo sont conservés.
+- **Parcours étanches** : ce qu'on fait dans un parcours reste tant qu'on y reste ; quitter l'onglet (tab bar vers un autre onglet, bouton Accueil Android, parcours lancé depuis le panneau) remet le profil à zéro via `resetProfile()`. Les trajets publiés, la recherche, le témoin « boost déjà vu » et le réglage de démo sont conservés. Exception : en arrivant sur **Vos trajets** (onglet ou panneau), la conductrice a déjà sa photo (`resetProfile(true)` / `reset(true)`).
+- **Vos trajets (A2, maquette MES TRAJETS V3, node 372:3230)** : encart affiché si départ < 24 h, 0 passager et une info manquante (`tripMissingInfo` : photo, étapes, description ; l'identité n'entre plus en compte). Critères dans un **ordre fixe**, sans tri : « Ajouter des étapes », « Ajouter une description », « Ajouter une photo de profil » (même libellé coché ou non pour la photo). Encart placé avant la date et l'itinéraire. Trajet de démo de demain sans étapes ni description, donc état initial : étapes et description à faire, photo cochée. « Ajouter des étapes » n'a pas encore d'écran cible.
 - **Photo** : acceptée directement pendant la publication et depuis Vos trajets ; refus puis acceptation **uniquement depuis le Profil** (`rejectsNext` dans `profile.tsx`). Pas de sélecteur de fichiers : les boutons enchaînent sur la vérification avec les photos de la maquette (lunettes = refusée, Coralie = acceptée).
-- **Ordre des étapes** : la **photo avant la pièce d'identité** partout (profil, rappel de publication, Vos trajets).
+- **Ordre des étapes** : la **photo avant la pièce d'identité** partout où l'identité apparaît (profil, rappel de publication).
 - **Encart C1** : seulement les vrais nouveaux (0 trajet passager) avec photo, identité **et** numéro vérifiés (Feroze, Yamina). Les débutants qui ont déjà voyagé (Nicolas 13, Inès 4) restent dans la liste principale avec leur badge. Badge « N Trajets Passager » en bleu, comme « Super Driver », avec une icône de passagers.
 - **Adresses** (champs vides à l'ouverture, saisie libre toujours possible) : départ = « Utiliser ma position actuelle » (65 Rue Ordener, Paris) + Paris ; arrivée = Lyon pour la recherche, Capbreton pour la publication. On ne peut pas choisir la même ville au départ et à l'arrivée ; en recherche, seules des villes sont proposées.
 - **Calendrier de publication** : à partir du lendemain ; jours où un trajet existe déjà grisés (un seul trajet par jour, retour compris).
@@ -99,6 +100,19 @@ npx tsc -b       # vérification des types seule
 ```
 
 Déploiement : `git push` sur `main` → Vercel redéploie automatiquement (≈ 30 à 40 s). Vérifier la mise en ligne en comparant le nom du bundle `assets/index-*.js` de `dist/index.html` avec celui servi par https://noe-prototype-blablacar-cinco.vercel.app. Terminer les messages de commit par la ligne de co-auteur demandée par l'environnement.
+
+## Versions
+
+Chaque version présentée est figée par un **tag** et une **branche** du même nom sur GitHub, puis on continue sur `main`.
+
+| Version | Commit | Adresse figée (publique) |
+|---|---|---|
+| V1 | `5810d50` | https://noe-prototype-blablacar-cinco-2fm9ixlmk-jeanbaptistekrady-9091.vercel.app |
+
+- L'adresse principale https://noe-prototype-blablacar-cinco.vercel.app ne change jamais et montre toujours la dernière version poussée sur `main` (lien et QR code de la présentation).
+- Revoir une version en local : `git checkout tags/v1` puis `npm run dev` ; retour avec `git checkout main`.
+- Créer la version suivante (sur demande) : `git tag -a v2 -m "…"`, `git branch v2`, puis `git push origin refs/tags/v2 refs/heads/v2:refs/heads/v2` (tag et branche ont le même nom : préciser `refs/…`, sinon Git refuse).
+- Adresse figée : Vercel ne crée pas de déploiement de branche si le commit est déjà déployé. On prend l'adresse du déploiement de production de ce commit via `gh api repos/jbkrady/noe-prototype-blablacar-cinco/deployments` puis `…/deployments/<id>/statuses` (`environment_url`). La protection Vercel (Deployment Protection) a été désactivée par l'utilisateur : ces adresses sont publiques.
 
 ## Pièges connus
 
