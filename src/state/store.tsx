@@ -223,10 +223,13 @@ export const profileSteps = (s: AppState) => [
   { key: 'prefs', done: s.prefs.length > 0 },
 ]
 
-/** A2 : profil incomplet ET départ < 24 h ET aucun passager */
+/** A2 (MES TRAJETS V3) : infos manquantes pour améliorer le trajet (photo, étapes, description) */
+export const tripMissingInfo = (s: AppState, t: Trip) => !s.photo || t.stops.length === 0 || !t.description
+
+/** A2 : trajet à améliorer ET départ < 24 h ET aucun passager */
 export const needsPreDepartureReminder = (s: AppState, t: Trip) => {
   const h = (t.departure.getTime() - Date.now()) / 3600000
-  return !isComplete(s) && h > 0 && h < 24 && t.passengers === 0
+  return tripMissingInfo(s, t) && h > 0 && h < 24 && t.passengers === 0
 }
 
 /** C2 : message de boost une seule fois, à la 1re publication avec photo ET identité */

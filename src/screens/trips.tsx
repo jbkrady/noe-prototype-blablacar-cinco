@@ -31,7 +31,7 @@ export function Trips() {
   )
 }
 
-/** A2 (maquette MES TRAJETS V2) : bandeau, contour orange et critères si profil incomplet + départ < 24 h + 0 passager */
+/** A2 (maquette MES TRAJETS V3) : bandeau, contour orange et critères si infos manquantes + départ < 24 h + 0 passager */
 function TripCard({ t }: { t: Trip }) {
   const router = useRouter()
   const { s } = useStore()
@@ -39,26 +39,17 @@ function TripCard({ t }: { t: Trip }) {
   const hours = Math.max(1, Math.round((t.departure.getTime() - Date.now()) / 3600000))
   const dep = hhmm(t.departure.getHours(), t.departure.getMinutes())
 
-  // photo (prioritaire), identité, puis description ; un critère non rempli remonte au-dessus des critères remplis
+  // ordre fixe de la maquette : étapes, description, photo (pas de tri par complétion)
   const criteria = [
-    { key: 'photo', done: !!s.photo, todo: 'Ajouter une photo de profil', ok: 'Photo de profil', go: () => router.push('photo-intro', { origin: 'trips' }) },
-    { key: 'id', done: s.identity === 'verified', todo: 'Vérifier mon identité', ok: 'Identité vérifiée', go: () => router.push('id-intro', { origin: 'trips' }) },
+    { key: 'stops', done: t.stops.length > 0, todo: 'Ajouter des étapes', ok: 'Étapes', go: undefined },
     { key: 'desc', done: !!t.description, todo: 'Ajouter une description', ok: 'Description', go: () => router.push('publish-description', { tripId: t.id }) },
-  ].sort((a, b) => Number(a.done) - Number(b.done))
+    { key: 'photo', done: !!s.photo, todo: 'Ajouter une photo de profil', ok: 'Photo de profil', go: () => router.push('photo-intro', { origin: 'trips' }) },
+  ]
 
   return (
     <article className={`trip${alert ? ' trip--alert' : ''}`}>
       {alert && <p className="trip-alert-head"><AlarmClock size={18} /> Votre trajet approche. Départ dans {hours}h</p>}
       <div className="trip-body">
-        <div className="trip-date">
-          <h2>{longDate(t.departure)}</h2>
-          <span className="trip-pax">{t.passengers} passager{t.passengers > 1 ? 's' : ''}</span>
-        </div>
-        <div className="trip-route">
-          <span className="trip-times"><b>{dep}</b><small>{durationLabel(t.durationMin)}</small><b>{addMinutes(dep, t.durationMin)}</b></span>
-          <span className="offer-line" aria-hidden />
-          <span className="trip-cities"><b>{cityOf(t.from)}</b><b>{cityOf(t.to)}</b></span>
-        </div>
         {alert && (
           <>
             <p className="trip-alert-lead">Augmentez vos chances de trouver des passagers</p>
@@ -75,6 +66,15 @@ function TripCard({ t }: { t: Trip }) {
             </ul>
           </>
         )}
+        <div className="trip-date">
+          <h2>{longDate(t.departure)}</h2>
+          <span className="trip-pax">{t.passengers} passager{t.passengers > 1 ? 's' : ''}</span>
+        </div>
+        <div className="trip-route">
+          <span className="trip-times"><b>{dep}</b><small>{durationLabel(t.durationMin)}</small><b>{addMinutes(dep, t.durationMin)}</b></span>
+          <span className="offer-line" aria-hidden />
+          <span className="trip-cities"><b>{cityOf(t.from)}</b><b>{cityOf(t.to)}</b></span>
+        </div>
       </div>
     </article>
   )
