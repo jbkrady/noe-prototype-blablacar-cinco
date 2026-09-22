@@ -13,7 +13,7 @@ Objectif : aider les nouveaux conducteurs (« newbies ») à réussir leur premi
 | **Profil** (conducteur) | Profil, photo, pièce d'identité | Carte « État du profil » avec une seule action à la fois et une jauge ; vérification de la photo dans l'application (refus avec les règles, puis acceptation) ; sections modifiables avec le crayon |
 | **Publier un trajet** | Adresse, carte, itinéraire, étapes, dates, heure, places, réservation instantanée, prix, Zen, retour, rappel de profil, assurance, description, boost | Rappel de ce qui manque au profil sans bloquer la publication ; description avec texte d'exemple et message rassurant ; message de boost affiché une seule fois |
 | **Vos trajets** | Liste des trajets | Trajet dans moins de 24 h sans passager signalé en orange, avec les éléments à compléter en un clic |
-| **Rechercher** (passager) | Accueil, recherche, résultats, fiche conducteur | Encart « Ils rejoignent la communauté des conducteurs » réservé aux vrais nouveaux vérifiés ; badge « N Trajets Passager » pour les débutants qui ont déjà voyagé |
+| **Rechercher** (passager) | Accueil, recherche, résultats, fiche conducteur | Encart « Ils rejoignent la communauté des conducteurs » réservé aux vrais nouveaux vérifiés ; badge « Super Passager » pour les débutants qui ont déjà voyagé |
 
 Les user stories correspondantes sont dans le backlog JIRA « PM Noé Team » (SCRUM-5 à SCRUM-15). Les maquettes de référence sont dans le Figma « BlaBlaCar 5 », page PROTOS.
 

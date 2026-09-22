@@ -12,7 +12,7 @@ export const NOTES: Record<string, { note: string }> = {
   boost: { note: 'Affiché une seule fois, quand photo et identité sont validées.' },
   trips: { note: 'Départ dans moins de 24 h sans passager : le trajet est signalé en orange.' },
   results: { note: 'Encart réservé aux nouveaux conducteurs vérifiés, sans trajet passager.' },
-  driver: { note: 'Badge selon le profil : Nouveau, trajets passager ou Super Driver.' },
+  driver: { note: 'Badge selon le profil : Nouveau, Super Passager ou Super Driver.' },
 }
 
 export const JOURNEYS = [

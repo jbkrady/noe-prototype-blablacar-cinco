@@ -136,8 +136,7 @@ function IdentitySection({ onVerify }: { onVerify: () => void }) {
         </>
       ) : (
         <>
-          <p className="pitem pitem--text">{s.firstName} {s.lastName}</p>
-          <p className="pitem pitem--text">Née le {new Date(s.birthDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+          {/* nom, prénom et date de naissance : confidentiels, visibles seulement en modification (crayon) */}
           {s.identity === 'verified' ? (
             <p className="pitem"><CheckDot size={20} /> Pièce d’identité vérifiée</p>
           ) : (

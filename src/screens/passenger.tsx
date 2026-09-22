@@ -171,7 +171,7 @@ export function Results() {
   )
 }
 
-/** C3 : « N Trajets Passager », sinon « ★ Nouveau » (jamais « 0 Trajets Passager ») */
+/** C3 : « Super Passager » (au moins un trajet passager), sinon « ★ Nouveau » */
 export function HistoryBadge({ d }: { d: Driver }) {
   const badge = passengerBadge(d.passengerTrips)
   if (!d.newbie) return null

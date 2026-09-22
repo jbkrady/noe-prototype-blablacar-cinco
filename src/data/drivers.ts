@@ -37,11 +37,9 @@ export const DRIVERS: Record<string, Driver> = {
   erwan: { id: 'erwan', name: 'Erwan', age: 24, verified: false, phoneVerified: false, newbie: false, rating: 4.2, reviews: 3, driverTrips: 3, passengerTrips: 5, prefs: [], distanceKm: 5 },
 }
 
-/** C3 : libellé du badge d'historique passager (null = « ★ Nouveau ») */
+/** C3 : « Super Passager » dès un trajet passager (null = « ★ Nouveau »). V2 : remplace « N Trajets Passager » */
 export function passengerBadge(n: number): string | null {
-  if (n <= 0) return null
-  if (n > 99) return '99+ Trajets Passager'
-  return n === 1 ? '1 Trajet Passager' : `${n} Trajets Passager`
+  return n > 0 ? 'Super Passager' : null
 }
 
 /**
