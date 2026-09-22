@@ -5,7 +5,7 @@ import {
 import { useRouter } from '../state/router'
 import { boostEligible, isComplete, newDraft, useStore, type Trip } from '../state/store'
 import { cityOf, type Place } from '../data/places'
-import { addMinutes, hhmm } from '../data/format'
+import { addMinutes, hhmm, sameDay } from '../data/format'
 import { Avatar, BackBar, Button, CheckDot, Checkbox, Dialog, Fab, Radio, Row, Screen, Stepper, Title } from '../ui/kit'
 import mapParis from '../assets/map-paris.png'
 import mapRoute from '../assets/map-route.png'
@@ -439,7 +439,7 @@ export function PublishReminder() {
   ].filter(Boolean) as { key: string; title: string; sub: string; go: () => void }[]
 
   return (
-    <Screen header={<BackBar />} footer={<div className="btn-zone"><Button onClick={() => router.push('publish-insurance')}>Continuer</Button></div>}>
+    <Screen header={<BackBar />} footer={<div className="btn-zone"><Button onClick={() => router.push('publish-description')}>Continuer</Button></div>}>
       <Title>{missing.length ? <>Boostez votre premier trajet <span aria-hidden>🚀</span></> : 'Votre profil est complet !'}</Title>
       <p className="lead">
         {missing.length
@@ -500,6 +500,14 @@ export const DESCRIPTION_PLACEHOLDER =
   "Vous ne pouvez accepter qu'un bagage cabine et un sac à dos ?\nVous êtes flexible sur l'heure de départ ?\nVous ne faites pas de détour de plus de 10 min ?"
 
 /** B1 + B2 — description du trajet (publication, ou modification depuis « Vos trajets ») */
+/** V2 (écran des dates sauté) : premier jour à partir de demain sans trajet, un seul trajet par jour */
+const firstFreeDay = (trips: Trip[]) => {
+  const d = new Date()
+  do d.setDate(d.getDate() + 1)
+  while (trips.some(t => sameDay(t.departure, d)))
+  return d
+}
+
 export function PublishDescription({ tripId }: { tripId?: string }) {
   const router = useRouter()
   const { s, set, setDraft } = useStore()
@@ -510,7 +518,7 @@ export function PublishDescription({ tripId }: { tripId?: string }) {
   const publish = () => {
     const d = { ...s.draft, description: text.trim() }
     const route = ROUTES[d.route]
-    const dates = d.dates.length ? d.dates : [new Date(Date.now() + 86400000)]
+    const dates = d.dates.length ? d.dates : [firstFreeDay(s.trips)]
     const [hh, mm] = d.time.split(':').map(Number)
     const created: Trip[] = dates.map((day, i) => {
       const dep = new Date(day)

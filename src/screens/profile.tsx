@@ -15,6 +15,15 @@ export function Profile() {
   const photoFlow = () => router.push('photo-intro', { origin: 'profile' })
   const idFlow = () => router.push('id-intro', { origin: 'profile' })
   const soon = () => {}
+  // bandeau « Votre photo est en ligne » affiché 3 s, puis s'efface et se replie en douceur ; le badge vert reste sur la photo
+  const [online, setOnline] = useState<'on' | 'leaving' | 'off'>('on')
+  useEffect(() => {
+    if (!s.photo) return
+    setOnline('on')
+    const t1 = setTimeout(() => setOnline('leaving'), 3000)
+    const t2 = setTimeout(() => setOnline('off'), 3900)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
+  }, [s.photo])
 
   return (
     <Screen
@@ -45,8 +54,8 @@ export function Profile() {
             <ChevronRight size={22} className="muted" />
           </button>
 
-          {s.photo && !isComplete(s) && (
-            <div className="online-banner"><CheckDot size={20} /> Votre photo est en ligne</div>
+          {s.photo && online !== 'off' && !isComplete(s) && (
+            <div className={`online-banner${online === 'leaving' ? ' online-banner--out' : ''}`}><CheckDot size={20} /> Votre photo est en ligne</div>
           )}
 
           {/* A1 — encart « État du profil » : une seule action, la prochaine étape ; disparaît si profil complet */}
@@ -249,7 +258,7 @@ export function PhotoIntro({ origin }: Origin) {
   )
 }
 
-/** Vérification synchrone : 3 s, ou délai dépassé à 15 s (réglage de démo) */
+/** Vérification synchrone : 1,5 s, ou délai dépassé à 15 s (réglage de démo, US A3) */
 export function PhotoCheck({ origin, photo }: Origin & { photo: string }) {
   const router = useRouter()
   const { s, set, showToast } = useStore()
@@ -267,7 +276,7 @@ export function PhotoCheck({ origin, photo }: Origin & { photo: string }) {
       if (rejected) router.replace('photo-rejected', { origin, photo })
       // photo acceptée : retour à l'écran d'origine, où le bandeau « Votre photo est en ligne » et le badge vert suffisent
       else router.backTo(origin)
-    }, slow ? 15000 : 3000)
+    }, slow ? 15000 : 1500)
     return () => clearTimeout(t)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -280,7 +289,7 @@ export function PhotoCheck({ origin, photo }: Origin & { photo: string }) {
         </span>
         <h1 className="check-title">On vérifie votre photo</h1>
         <p className="check-text">Ça prend quelques secondes. On s’assure que les membres pourront bien vous reconnaître.</p>
-        <span className="check-progress" aria-hidden><span style={{ animationDuration: s.photoCheck === 'timeout' ? '15s' : '3s' }} /></span>
+        <span className="check-progress" aria-hidden><span style={{ animationDuration: s.photoCheck === 'timeout' ? '15s' : '1.5s' }} /></span>
       </div>
     </Screen>
   )
@@ -342,7 +351,7 @@ export function IdCheck({ origin }: Origin) {
     const t = setTimeout(() => {
       set({ identity: 'verified' })
       router.backTo(origin)
-    }, 2500)
+    }, 1000)
     return () => clearTimeout(t)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
   return (

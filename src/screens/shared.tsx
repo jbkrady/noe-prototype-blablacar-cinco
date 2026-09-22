@@ -47,7 +47,8 @@ export function PlacePicker({ target }: { target: PlaceTarget }) {
     if (target === 'publish-from') setDraft({ from: p })
     if (target === 'publish-to') setDraft({ to: p })
     if (target === 'publish-from') router.push('publish-map')
-    else if (target === 'publish-to') router.push('publish-route')
+    // V2 : itinéraire, étapes, date, heure, places, réservation, prix, Zen, retour et assurance sautés (valeurs par défaut du brouillon)
+    else if (target === 'publish-to') router.push(isComplete(s) ? 'publish-description' : 'publish-reminder')
     else router.back()
   }
 

@@ -10,7 +10,9 @@
 .me-id b { font-family: var(--font); font-size: 20px; font-weight: 800; }
 .me-id small { font-size: 14px; color: var(--c-text-2); }
 
-.online-banner { display: flex; align-items: center; gap: 10px; margin: 0 24px 12px; padding: 12px 14px; border-radius: 12px; background: var(--c-success-soft); font-size: 15px; font-weight: 500; }
+.online-banner { display: flex; align-items: center; gap: 10px; margin: 0 24px 12px; padding: 12px 14px; border-radius: 12px; background: var(--c-success-soft); font-size: 15px; font-weight: 500; max-height: 80px; overflow: clip; transition: opacity .35s ease, max-height .55s ease .25s, margin .55s ease .25s, padding .55s ease .25s; }
+/* disparition : le bandeau s'efface, puis se replie et l'encart « État du profil » remonte */
+.online-banner--out { opacity: 0; max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; }
 .online-banner .checkdot { background: var(--c-success); }
 
 .state-card { margin: 0 24px 8px; padding: 18px 16px 16px; border-radius: 16px; background: var(--c-primary-soft); }
