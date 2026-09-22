@@ -110,6 +110,9 @@ Chaque version présentée est figée par un **tag** et une **branche** du même
 | Version | Commit | Adresse figée (publique) |
 |---|---|---|
 | V1 | `5810d50` | https://noe-prototype-blablacar-cinco-2fm9ixlmk-jeanbaptistekrady-9091.vercel.app |
+| V2 | `80d9246` | https://noe-prototype-blablacar-cinco-3ach7ry7k-jeanbaptistekrady-9091.vercel.app |
+
+V2 par rapport à V1 : parcours de publication raccourci (sans les écrans BlaBlaCar ni l'assurance), pièce d'identité en 1 s, photo en 1,5 s, bandeau « Votre photo est en ligne » 3 s puis effacé en douceur, badge et bandeau en bleu, profil sans nom ni date de naissance, badge « Super Passager ».
 
 - L'adresse principale https://noe-prototype-blablacar-cinco.vercel.app ne change jamais et montre toujours la dernière version poussée sur `main` (lien et QR code de la présentation).
 - Revoir une version en local : `git checkout tags/v1` puis `npm run dev` ; retour avec `git checkout main`.
